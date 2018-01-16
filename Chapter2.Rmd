@@ -215,17 +215,22 @@ There are multiple points overlaying one another. We can remedy this using geom_
 ggplot(mpg, aes(cty,hwy)) + geom_jitter()
 ```
 
-2. One challenge with `ggplot(mpg, aes(class,hwy)) + geom_boxplot()` is that the ordering of `class` is alphabetical, which is not terribly useful. How could you change the factor levels to be more informative?
+2. One challenge with `ggplot(mpg, aes(class,hwy)) + geom_boxplot()` is that the ordering of `class` is alphabetical, which is not terribly useful. How could you change the factor levels to be more informative? Rather than reordering the factor by hand, you could do it automatically based on the data: `ggplot(mpg, aes(reorder(class,hwy), hwy)) + geom_boxplot()`. What does `reorder` do? Read the documentation.
 
 ```{r}
 ggplot(mpg, aes(class,hwy)) + geom_boxplot()
 ```
 
-Ans: It might be nice to order by the average engine size. The following code finds the average engine size per class, but I'm not sure how use it to sort the order of the boxes.
+Order by `hwy`:
 
 ```{r}
-avgDisplByClass <- mpg %>% group_by(class) %>% summarize(avgDispl=mean(displ))
-avgDisplByClass
+ggplot(mpg, aes(reorder(class,hwy), hwy)) + geom_boxplot()
+```
+
+Here `reorder(class,hwy), hwy)` reorders the `class` factor by average `hwy`. We can verify this by looking at the average `hwy` miles per gallon by class:
+
+```{r}
+mpg %>% group_by(class) %>% summarize(avgHwy=mean(hwy)) %>% arrange(avgHwy)
 ```
 
 
