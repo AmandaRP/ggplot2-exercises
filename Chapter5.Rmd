@@ -1,0 +1,108 @@
+---
+title: "Chapter 5"
+author: "Amanda P"
+date: "1/17/2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# 5.3.1 Exercises
+
+1. The first two arguments to `ggplot` are `data` and `mapping`. The first two arguments to all layer functions are `mapping` and `data`. Why does the order of teh arguments differ? (Hint: think about what you set most commonly.)
+
+2. The following code uses dplyr to generate some summary statistics about each class of car (you'll learn how it works in Chapter 10). 
+
+```{r}
+library(dplyr)
+class <- mpg %>% group_by(class) %>% summarise(n=n(), hwy=mean(hwy))
+class
+```
+
+Use the data to recreate the plot (shown in book).
+
+```{r}
+ggplot(mpg,aes(class,hwy)) + geom_point()
+#TODO: ADD MORE TO THIS PLOT
+```
+
+# 5.4.3 Exercises
+
+1. Simplify the following plot spcifications:
+
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+
+2. What does the following code do? Does it work? Does it make sense? Why/why not?
+
+```{r}
+ggplot(mpg) + geom_point(aes(class,cty)) + geom_boxplot(aes(trans,hwy))
+```
+
+3. What happens if you try to use a continuous variable on the x axis in one layer, and a categorical variable in another layer? What happens if you do it in the opposite order?
+
+
+# 5.5.1 Exercises
+
+1. Download and print out the ggplot2 cheatsheet from http://www.rstudio.com/resources/cheatsheets/ so you have a handy visual reference for all the geoms.
+
+Done check.
+
+2. Look at the documentation for the graphical primitive geoms. Which aesthetics do they use? How can you summarize them in a compact form?
+
+3. What's the best way to master an unfamiliar geom? List three resources to help you get started.
+
+4. For each of the plots below, identify the geom used to draw it.
+
+5. For each of the following problems, suggest a useful geom:
+
+* Display how a variable has changed over time
+* Show the detailed distribution of a single variable
+* Focus attention on the overall trend in a large dataset
+* Draw a map
+* Label outlying points
+
+# 5.6.2 Exercises
+
+1. The code below creates a similar dataset to `stat_smooth()`. Use the appropriate geoms to mimic the default `geom_smooth()` display.
+
+```{r}
+mod <- loess(hwy ~ displ, data=mpg)
+smoothed <- data.frame(displ= seq(1.6,7,length=50))
+pred <- predict(mod, newdata=smoothed, se=TRUE)
+smoothed$hwy <- pred$fit
+smoothed$hwy_lwr <- pred$fit - 1.96 * pred$se.fit
+smoothed$hwy_upr <- pred$fit + 1.96 * pred$se.fit
+```
+
+2. What stats were used to create the following plots?
+
+* First plot:
+* Second plot:
+* Third plot:
+
+3. Read the help for `stat_sum()` then `geom_count()` to create a plot tha tshows the proportion of cars that have each combination of `drv` and `trans`.
+
+#5.7.1 Exercises
+
+1. When might you use `position_nudge()`? Read the documentation.
+
+2. Many position adjustments can only be used with a few geoms. For example, you can't stack boxplots or eror bars. Why not? What properties must a geom possess in order to be stackable? What properties must it possess to be dodgeable?
+
+3. Why might you use `geom_jitter()` instead of `geom_count()`? What are teh advantages and disadvantages of each technique?
+
+4. When might you use a stacked area plot? What are the advantages and disadvantages compared to a line plot?
+
