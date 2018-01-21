@@ -42,14 +42,14 @@ data(package='ggplot2')
 Amanda's note: I think there should be a way to get the following into one line.
 
 ```{r}
-mpg[,c("manufacturer","model")] %>% group_by(manufacturer) %>% unique() %>% count() -> modelCount
+modelCount <- mpg[,c("manufacturer","model")] %>% group_by(manufacturer) %>% unique() %>% count()  
 modelCount[which.max(modelCount$n),"manufacturer"]
 ```
 
 We see that Toyota has the most models. Below we find that the Caravan 2wd has the most variations.
 
 ```{r}
-mpg %>% group_by(model) %>% unique() %>% count() -> variations
+variations <- mpg %>% group_by(model) %>% unique() %>% count() 
 variations[which.max(variations$n),"model"]
 ```
 
@@ -59,7 +59,7 @@ Next, see if our answer changes by getting rid of redundant drv information in t
 ```{r}
 mpg2 <- mutate(mpg,modelName= model %>% tolower() %>% gsub(pattern=' [a24]{1}wd| quattro',replacement='') )
 
-mpg2 %>% group_by(modelName) %>% unique() %>% count() -> variations
+variations <- mpg2 %>% group_by(modelName) %>% unique() %>% count() 
 variations[which.max(variations$n),"modelName"]
 ```
 
