@@ -7,6 +7,7 @@ output: html_document
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+library(ggplot2)
 ```
 
 # 5.3.1 Exercises
@@ -65,12 +66,10 @@ The code above works. It plots `class` vs `cty` using points and on the same plo
 
 First, we'll try a continuous variable on the x-axis (`hwy`) in one layer, and a categorical variable (`class`) in another layer.
 
-```{r}
-ggplot(mpg) + geom_point(aes(hwy,cty)) + geom_point(aes(class,cty)) 
-```
-
-The above code returns the following error:
+The code below returns the following error:
 `Error: Discrete value supplied to continuous scale`
+
+`#ggplot(mpg) + geom_point(aes(hwy,cty)) + geom_point(aes(class,cty))`
 
 Next, we'll reverse the order of the two layers such that the categorical variable is plotted on the x-axis first and then the continuous variable. This order works.
 
@@ -96,6 +95,9 @@ The graphical primitive geoms use the following aesthetics.
 * `geom_rect()`: xmin, xmax, ymin, ymax, alpha, color, fill, group, linetype, size
 * `geom_polyon()`: x, y, alpha, color, fill, group, linetype, size
 * `geom_text()`: x, y, label, alpha, angle, color, family, fontface, group, hjust, lineheight, size, vjust
+
+TODO: How can you summarize them in a compact form?
+
 
 3. What's the best way to master an unfamiliar geom? List three resources to help you get started.
 
@@ -145,15 +147,30 @@ ggplot(mpg,aes(displ,hwy)) + geom_point()  + geom_ribbon(aes(x=displ,ymin=hwy_lw
 
 3. Read the help for `stat_sum()` then `geom_count()` to create a plot that shows the proportion of cars that have each combination of `drv` and `trans`.
 
+```{r}
+ggplot(mpg,aes(drv,trans)) + geom_count(aes(size = ..prop.., group=1))
+```
+
 
 
 #5.7.1 Exercises
 
 1. When might you use `position_nudge()`? Read the documentation.
 
+`position_nudge()` is especially useful with text to place it in a position where it is readable and not hiding data points.
+
 2. Many position adjustments can only be used with a few geoms. For example, you can't stack boxplots or eror bars. Why not? What properties must a geom possess in order to be stackable? What properties must it possess to be dodgeable?
 
-3. Why might you use `geom_jitter()` instead of `geom_count()`? What are teh advantages and disadvantages of each technique?
+* What properties must a geom possess in order to be stackable? Ans: TODO
+* What properties must it possess to be dodgeable? Ans: TODO
+
+3. Why might you use `geom_jitter()` instead of `geom_count()`? What are the advantages and disadvantages of each technique?
+
+* `geom_jitter()`: Might use this for smaller datasets. Con: For large datasets, jitter may not be enough to see all points.
+* `geom_count()`: Might use this if the data size is larger. Size of point indicates count or proportion of datapoints at that location. Con?
 
 4. When might you use a stacked area plot? What are the advantages and disadvantages compared to a line plot?
+
+* stacked area plot: Use when you are interested in trends of combinations of variables. The $n^{th}$ area shows the trend of the combination of the first $n$ variables.
+* line plot: Use when you are interested in comparing the trend of each variable separately (and in contrast to one another). 
 
