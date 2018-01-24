@@ -46,7 +46,7 @@ modelCount <- mpg[,c("manufacturer","model")] %>% group_by(manufacturer) %>% uni
 modelCount[which.max(modelCount$n),"manufacturer"]
 ```
 
-We see that Toyota has the most models. Below we find that the Caravan 2wd has the most variations.
+We see that Toyota has the most models. Below we find that the Jetta has the most variations.
 
 ```{r}
 variations <- mpg[,c("manufacturer", "model","cyl", "trans", "drv", "fl", "class")] %>% group_by(model) %>% unique() %>% count() 
