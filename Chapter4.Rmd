@@ -15,26 +15,41 @@ For each of the graphics listed below, write down the components of the graphic.
 
 1. ["Napoleon's march", by Charles John Minard](http://www.datavis.ca/gallery/re-minard.php)
 
++ map
++ time series plot showing losses over time
++ line width indicates number of men present at the time
++ colors: indicate whether the men were traveling toward or away from Russia
 
 
 2. ["Where the Heat and the Thunder Hit Their Shots", by Jeremy White, Joe Ward, and Matthew Ericson at The New York Times](http://nyti.ms/1duzTvY) 
-
-
++ Points: Indicate player location on a basketball court
++ Faceting: Two different teams
++ Shape scaling: Indicates number of attempts
++ Color: Indicates points earned in region
++ Legends
 
 3. ["London Cycle Hire Journeys", by James Cheshire](http://bit.ly/1S2cyRy)
-
-
++ map
++ lines: routes
++ line scale: Thicker lines indicate more journeys
 
 4. [The Pew Research Center's favorite data visualizations of 2014:](http://pewrsr.ch/1KZSSN6)
-
-
++ *Republicans shift to the right, Democrats to the left*: freqpoly showing the distribution of voters. Faceting showing different years and political parties. Line showing median.
++ *Percent of US Population by age*: Histogram animated by time. Faciting (reflected over a center line) by gender. 
++ *Six US Cities Have Held the Title of "Murder Capitol" since 1985*: Bar chart showing murders per capita for each year. Line showing national murder rate. Vertical lines separating cities that held title.
++ *Ideological Placement of Each Source's Audience*: Line showing conservatie/liberal scale. Points on line indicating placement of news sources. Point for average consumer.
++ *Regional Support for Same-Sex Marriage*: Time series plots. Faceted by region.
 
 5. ["The Tony's Have Never Been so Dominated by Women", by Joanna Kao at FiveThirtyEight](http://53eig.ht/1cJRCyG)
-
-
++ aes mapping: category vs year
++ grid: red block indicating atleast one woman nominated
 
 6. ["In Climbing Income Ladder, Location Matters", by Mike Bostock, Shan Carter, Amanda Cox, Matthew Ericson, Josh Keller, Alicia Parlapiano, Kevin Quealy and Josh Williams at the New York Times](http://nyti.ms/1S2dJQT)
++ Map
++ Color: The chance a child raised in the bottom fifth rose to the top fifth
++ Points showing specific data points
 
+7. ["Dissecting a Trailer: The Parts of the Film That Make the Cut", by Shan Carter, Amanda Cox, and Mike Bostock at the New York Times](http://nyti.ms/1KTJQOE)
 
-
-7. ["Dissecting a Trailer: The Parts of the Film That Make the Cut", by Shan Carter, Amanda Cox, and Mike Bostock at the New York Times](http://nyti.ms?1KTJQOE)
+"You have reached your free article limit for the month."
+TODO: Finish this problem.
