@@ -1,0 +1,69 @@
+---
+title: "Chapter6"
+author: "Amanda P"
+date: "1/24/2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+# 6.2.1 Exercises
+
+1. What happens if you pair a discrete variable to a continuous scale? What happens if you pair a continuous variable to a discrete scale?
+
+Pairing a discrete variable to a continous scale gives an error: `Error: Discrete value supplied to continuous scale`
+
+Pairing a continuous variable to a discrete scale works. Here is an example:
+
+```{r}
+ggplot(mpg,aes(hwy,cty)) + geom_point() + scale_x_discrete()
+```
+
+We see that the x axis breaks and associated labels disappear. 
+
+2. Simplify the following plot specifications to make them easier to understand.
+
+```{r}
+#original:
+ggplot(mpg,aes(displ)) + scale_y_continuous("Highway mpg") + scale_x_continuous() + geom_point(aes(y=hwy))
+
+#simplified version:
+ggplot(mpg,aes(displ,hwy)) + scale_y_continuous("Highway mpg") + geom_point()
+```
+
+```{r}
+#original:
+ggplot(mpg, aes(y=displ,x=class)) + scale_y_continuous("Displacement (l)") + scale_x_discrete("Care type") + scale_x_discrete("Type of car") + scale_color_discrete() + geom_point(aes(color=drv)) + scale_color_discrete("Drive\ntrain")
+
+#simplified version:
+ggplot(mpg, aes(y=displ,x=class, color=drv)) + scale_y_continuous("Displacement (l)") + scale_x_discrete("Type of car") + geom_point() + scale_color_discrete("Drive\ntrain")
+```
+
+
+#6.3.3 Exercises
+
+1. Recreate the following graphic (see book):
+
+
+```{r}
+ggplot(mpg,aes(displ,hwy)) + geom_point() + labs(x="Displacement",y= Highway~(frac(miles,gallon))) + scale_x_continuous(breaks = 2:7,labels=c("2L","3L","4L","5L","6L","7L"))
+```
+
+Adjust the y axis label so that the parentheses are the right size:
+
+TODO: Finish.
+
+```{r}
+ggplot(mpg,aes(displ,hwy)) + geom_point() + labs(x="Displacement",y= Highway~(frac(miles,gallon))) + scale_x_continuous(breaks = 2:7,labels=c("2L","3L","4L","5L","6L","7L"))
+```
+
+
+2. List the three different types of objects you an supply to the `breaks` argument. How do `breaks` and `labels` differ?
+
+3. Recreate the following plot (see book):
+
+```{r}
+
+```
+
