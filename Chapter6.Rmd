@@ -61,9 +61,84 @@ ggplot(mpg,aes(displ,hwy)) + geom_point() + labs(x="Displacement",y= Highway~(fr
 
 2. List the three different types of objects you an supply to the `breaks` argument. How do `breaks` and `labels` differ?
 
-3. Recreate the following plot (see book):
+Three different object you can supply to `breaks`:
+
+* vector
+* function
+* NULL
+
+`breaks` are the positions of the grid lines and associated `labels`. `labels` are the text that label the `breaks`. `labels` needs to be same length as `breaks`.
+
+3. Recreate the plot in the book:
 
 ```{r}
-
+ggplot(mpg,aes(displ,hwy,color=drv)) + geom_point()
 ```
 
+TODO: Finish. How to modify legend labels?
+
+4. What label function allows you to create mathematical expressions? What label function converts 1 to 1st, 2 to 2nd, and so on?
+
+`expression` can be used with `labels` to create a mathematical expressions. Additionally, `scales::math_format` may be useful.
+
+`scales::ordinal_format` can be used to convert 1 to 1st, 2 to 2nd, and so on. 
+
+5. What are the three most important arguments that apply to both axes and legends? What do they do? Compare and contrast their operation for axes vs legends.
+
+* `name`: Name of the legend,  axis label.
+* `breaks`: Key of the legend, ticks and grid lines of the axes.
+* `label`: Key label for the legend, tick labels for the axes.
+
+# 6.4.4 Exercises
+
+1. How do you make legends appear to the left of the plot?
+
+`theme(legend.position = "left")`
+
+2. What's gone wrong with this plot? How could you fix it?
+
+```{r}
+ggplot(mpg,aes(displ,hwy)) + geom_point(aes(color=drv,shape=drv)) + scale_color_discrete("Drive train")
+```
+
+Two legends are being drawn (one for color, one for shape) because they have different names. We can fix this by getting rid of `+ scale_color_discrete("Drive train")`:
+
+```{r}
+ggplot(mpg,aes(displ,hwy)) + geom_point(aes(color=drv,shape=drv)) 
+```
+
+
+3. Can you recreate the code for this plot?
+
+```{r}
+ggplot(mpg,aes(displ,hwy,color=class)) + geom_point() + geom_smooth(method="lm",se=FALSE) + theme(legend.position = "bottom",legend.title = NULL) 
+```
+
+TODO: How to put legend keys in one row and get rid of legend title?
+
+# 6.5.1 Exercises
+
+1. The following code creates two plots of the mpg dataset. Modify the code so that the legend and axes match, without using facetting!
+
+```{r}
+fwd <- subset(mpg, drv=="f")
+rwd <- subset(mpg, drv=="r")
+
+ggplot(fwd, aes(displ,hwy,color=class)) + geom_point()
+ggplot(rwd, aes(displ,hwy,color=class)) + geom_point()
+```
+
+TODO: Finish
+
+2. What does `expand_limits()` do and how does it work? Read the source code.
+
+3. What happens if you add two `xlim()` calls to the same plot? Why?
+
+4. What does `scale_x_continuous(limits = c(NA,NA))` do?
+
+
+# 6.6.5 Exercises
+
+1. Compare and contrast the fur continuous color scales with the four discrete scales.
+
+2. Explore the distribution of the buit-in `colors()` using the `luv_colors` dataset.
