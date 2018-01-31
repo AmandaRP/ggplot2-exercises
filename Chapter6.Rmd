@@ -7,6 +7,9 @@ output: html_document
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+library(ggplot2)
+library(magrittr)
+library(dplyr)
 ```
 # 6.2.1 Exercises
 
@@ -52,7 +55,7 @@ ggplot(mpg,aes(displ,hwy)) + geom_point() + labs(x="Displacement",y= Highway~(fr
 
 Adjust the y axis label so that the parentheses are the right size:
 
-TODO: Finish.
+TODO: Finish. How to modify parentheses size?
 
 ```{r}
 ggplot(mpg,aes(displ,hwy)) + geom_point() + labs(x="Displacement",y= Highway~(frac(miles,gallon))) + scale_x_continuous(breaks = 2:7,labels=c("2L","3L","4L","5L","6L","7L"))
@@ -114,6 +117,7 @@ ggplot(mpg,aes(displ,hwy)) + geom_point(aes(color=drv,shape=drv))
 ggplot(mpg,aes(displ,hwy,color=class)) + geom_point() + geom_smooth(method="lm",se=FALSE) + theme(legend.position = "bottom",legend.title = NULL) 
 ```
 
+
 TODO: How to put legend keys in one row and get rid of legend title?
 
 # 6.5.1 Exercises
@@ -124,21 +128,58 @@ TODO: How to put legend keys in one row and get rid of legend title?
 fwd <- subset(mpg, drv=="f")
 rwd <- subset(mpg, drv=="r")
 
-ggplot(fwd, aes(displ,hwy,color=class)) + geom_point()
-ggplot(rwd, aes(displ,hwy,color=class)) + geom_point()
+x.min <- mpg %>% select(displ) %>% min()
+x.max <- mpg %>% select(displ) %>% max()
+y.min <- mpg %>% select(hwy) %>% min()
+y.max <- mpg %>% select(hwy) %>% max()
+
+ggplot(fwd, aes(displ,hwy,color=class)) + geom_point() + xlim(x.min,x.max) + ylim(y.min,y.max)
+ggplot(rwd, aes(displ,hwy,color=class)) + geom_point()+ xlim(x.min,x.max) + ylim(y.min,y.max) 
 ```
 
-TODO: Finish
+TODO: How to get legends to match?
 
 2. What does `expand_limits()` do and how does it work? Read the source code.
 
+It is used to expand the axis (or colorbar) limits to include additional points specified in the function.
+
+Looking at the source code, it uses geom blank. TODO: Not exactly sure what it is doing.
+
+
 3. What happens if you add two `xlim()` calls to the same plot? Why?
+
+Here is an example:
+
+```{r}
+ggplot(mpg, aes(displ,hwy)) + geom_point() + xlim(0,8) + xlim(-1,9)
+```
+
+The second `xlim` is used. The first is ignored.
 
 4. What does `scale_x_continuous(limits = c(NA,NA))` do?
 
+Example:
+
+```{r}
+p <- ggplot(mpg, aes(displ,hwy)) + geom_point()
+p
+p + scale_x_continuous(limits = c(NA,NA))
+```
+
+It doesn't seem to do anything. The documentation says, "Use NA [for the limits argument] to refer to the existing minimum or maximum."
 
 # 6.6.5 Exercises
 
-1. Compare and contrast the fur continuous color scales with the four discrete scales.
+1. Compare and contrast the four continuous color scales with the four discrete scales.
+
+Continuous                | Discrete
+------------------------- |----------------------- 
+`scale_color_gradient()`  | `scale_color_hue()`
+`scale_color_gradient2()` | `scale_color_brewer()`
+`scale_color_gradientn()` | `scale_color_grey()`
+`scale_color_distiller()` | `scale_color_manual()`
+
+TODO: finish
 
 2. Explore the distribution of the buit-in `colors()` using the `luv_colors` dataset.
+
