@@ -1,0 +1,68 @@
+---
+title: "Chapter 7"
+author: "Amanda P"
+date: "1/30/2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(ggplot2)
+library(dplyr)
+```
+
+# 7.2.7 Exercises
+
+1. Diamonds: display the distribution of price conditional on cut and carat. Try facetting by cut and grouping by carat. Try facetting by carat and grouping by cut. Which do you prefer?
+
+Distribution of price conditional on cut and carat:
+
+```{r}
+# 3 bins containing equal number of points (carat):
+diamonds$carat_n <- cut_number(diamonds$carat,3)
+ggplot(diamonds,aes(price)) + geom_histogram() + facet_grid(carat_n ~ cut )
+```
+
+Facetting by cut and grouping by carat:
+
+```{r}
+ggplot(diamonds,aes(price,fill=carat_n)) + geom_histogram() + facet_wrap(~cut) + labs(fill="carat")
+```
+
+Facetting by carat and grouping by cut:
+
+```{r}
+diamonds$carat_n <- cut_number(diamonds$carat,6)
+ggplot(diamonds,aes(price,fill=cut)) + geom_histogram() + facet_wrap(~carat_n) 
+```
+
+I prefer the facetting by cut and grouping by carat (2nd plot).
+
+2. Diamonds: compare the relatiohnship between price and carat for each color. What makes it hard to compare the gropus? Is grouping better or facetting? If you use facetting, what annotaiton might you add to make it easier to see the differences between panels?
+
+The plot below shows price vs carat. Group diamond color by color aethetic:
+
+```{r}
+ggplot(diamonds,aes(price,carat,color=color)) + geom_point()
+```
+
+Due to overlap, it's difficult to see the difference between diamond color. Below we facet by color. We plot all points (in grey) on each facet and distinguish the diamond color using aesthetic color. This seems to work well, although many of the diamond colors have similar patterns.
+
+```{r}
+diamonds2 <- select(diamonds,-color)
+ggplot(diamonds,aes(price,carat)) + geom_point(data=diamonds2,color="grey70") + geom_point(aes(color=color)) + facet_wrap(~color)
+```
+
+
+3. Why is `facet_wrap()` generally more useful than `facet_grid()`?
+
+`facet_grid()` facets on two different categorical variables whereas `facet_wrap()` facets on one. The former may be harder to pick out patterns due to large number of facets. It may be better to use `facet_wrap()` for one categorical variable, and the grouping for the other categorical variable.
+
+4. Recreat the plot in the book. It facets `mpg2` by class, overlaying a smooth curve fit to the full dataset.
+
+```{r}
+mpg2 <- subset(mpg, cyl !=5 & drv %in% c("4","f") & class != "2seater")
+p <- ggplot(mpg2,aes(displ,hwy)) + geom_point() + geom_smooth(data=select(mpg2,c("hwy","displ")),se=FALSE)
+p + facet_wrap(~class)
+```
+
