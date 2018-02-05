@@ -1,0 +1,123 @@
+---
+title: "Chapter8"
+author: "Amanda P"
+date: "2/3/2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(ggplot2)
+```
+
+# 8.2.1 Exercises
+
+1. Try out all the themes in ggthemes. Which do you like the best?
+
+```{r}
+install.packages("ggthemes")
+library(ggthemes)
+```
+
+
+
+2. What aspects of the default theme do you like? What don't you like? What would you change?
+
+First define base graphic: 
+
+```{r}
+df <- data.frame(x=1:3, y=1:3)
+base <- ggplot(df, aes(x,y)) + geom_point()
+```
+
+The following themes are from the `ggtheme` package and not already shown in the book.
+
+* theme_base: a theme resembling the default base graphics in R. See also theme_par.
+
+```{r}
+base + theme_base() + ggtitle("theme_base()")
+```
+
+
+* theme_calc: a theme based on LibreOffice Calc.
+
+```{r}
+base + theme_calc() + ggtitle("theme_calc()")
+```
+
+* theme_economist: a theme based on the plots in the The Economist magazine.
+
+```{r}
+base + theme_economist() + ggtitle("theme_economist()")
+```
+
+
+* theme_few: theme from Stephen Few's "Practical Rules for Using Color in Charts".
+
+```{r}
+base + theme_few() + ggtitle("theme_few()")
+```
+
+* theme_fivethirtyeight: a theme based on the plots at fivethirtyeight.com.
+
+```{r}
+base + theme_fivethirtyeight() + ggtitle("theme_fivethirtyeight()")
+```
+
+* theme_gdocs: a theme based on Google Docs.
+
+```{r}
+base + theme_gdocs() + ggtitle("theme_gdocs()")
+```
+
+theme_hc: a theme based on Highcharts JS.
+
+```{r}
+base + theme_hc() + ggtitle("theme_hc()")
+```
+
+* theme_par: a theme that uses the current values of the base graphics parameters in par.
+
+```{r}
+base + theme_par() + ggtitle("theme_par()")
+```
+
+* theme_pander: a theme to use with the pander package.
+
+```{r}
+base + theme_pander() + ggtitle("theme_pander()")
+```
+
+
+* theme_stata: themes based on Stata graph schemes.
+
+```{r}
+base + theme_stata() + ggtitle("theme_stata()")
+```
+
+
+
+* theme_wsj: a theme based on the plots in the The Wall Street Journal.
+
+```{r}
+base + theme_wsj() + ggtitle("theme_wsj()")
+```
+
+
+3. Look at the plots in your favorite scientific journal. What themes do they most resemble? What are the main differences?
+
+TODO: Finish
+
+
+# 8.4.6 Exercises
+
+1. Create the ugliest plot possible! (Contributed by Andrew D. Steen, University of Tenessee - Knoxville)
+
+
+
+2. `theme_dark()` makes the inside of the plot dark, but not the outside. Change the plot background to black, and then update the text settings so you can still read the labels.
+
+3. Make an elegant gtheme that uses "linen" as the background color and a serif font for the text.
+
+4. Systematically explore the effects of `hjust` when you have a multiline title. Why doesn't `vjust` do anything?
+
