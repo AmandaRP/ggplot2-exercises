@@ -113,11 +113,55 @@ TODO: Finish
 
 1. Create the ugliest plot possible! (Contributed by Andrew D. Steen, University of Tenessee - Knoxville)
 
+```{r}
+base + ggtitle("Ugly Plot") + theme(plot.background = element_rect(fill="red"),panel.background = element_rect(fill="lightgreen"),panel.grid.major.x = element_line(color="gray60"),plot.title= element_text(face="italic",color="yellow",angle = 10),axis.title = element_text(color="purple", angle = -30 )) 
+```
 
 
 2. `theme_dark()` makes the inside of the plot dark, but not the outside. Change the plot background to black, and then update the text settings so you can still read the labels.
 
-3. Make an elegant gtheme that uses "linen" as the background color and a serif font for the text.
+```{r}
+base + theme_dark() + theme(plot.background = element_rect(fill="black"),axis.text = element_text(color="white"),axis.title = element_text(color="white"))
+```
+
+3. Make an elegant theme that uses "linen" as the background color and a serif font for the text.
+
+```{r}
+base + ggtitle("This is a plot") + theme(panel.background = element_rect(fill="linen"),plot.title= element_text(family="serif"),axis.title = element_text(family="serif"))
+```
+
 
 4. Systematically explore the effects of `hjust` when you have a multiline title. Why doesn't `vjust` do anything?
+
+Left justified:
+
+```{r}
+base + ggtitle("This is a very very very very very\nlooooooooooooong plot title") + theme(plot.title = element_text(hjust=0))
+```
+
+Centered:
+
+```{r}
+base + ggtitle("This is a very very very very very\nlooooooooooooong plot title") + theme(plot.title = element_text(hjust=.5))
+```
+
+Right justified:
+
+```{r}
+base + ggtitle("This is a very very very very very\nlooooooooooooong plot title") + theme(plot.title = element_text(hjust=1))
+```
+
+Printed over the edge of the plot: 
+
+```{r}
+base + ggtitle("This is a very very very very very\nlooooooooooooong plot title") + theme(plot.title = element_text(hjust=1.5))
+```
+
+TODO: The question is "Why doesn't vjust do anything?" However, `vjust` seems to move the text vertically:
+
+```{r}
+base + ggtitle("This is a very very very very very\nlooooooooooooong plot title") + theme(plot.title = element_text(vjust=4))
+
+```
+
 
