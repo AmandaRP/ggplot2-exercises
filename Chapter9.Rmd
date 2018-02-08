@@ -1,0 +1,50 @@
+---
+title: "Chapter 9"
+author: "Amanda P"
+date: "2/7/2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(ggplot2)
+library(devtools)
+```
+
+# 9.3.3 Exercises
+
+1. How can you translate each of the initial example datasets into the other form?
+
+```{r}
+
+```
+
+
+2. How can you convert back and forth between the `economics` and `econometrics_long` datasets built into ggplot2?
+
+```{r}
+
+```
+
+
+3. Install the EDAWR package from https://github.com/rstudio/EDAWR. Tidy the `storms`, `population` and `tb` datasets.
+
+```{r}
+#install_github("rstudio/EDAWR")
+library(EDAWR)
+```
+
+```{r}
+storms
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+
