@@ -9,6 +9,8 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 library(ggplot2)
 library(devtools)
+library(tidyr)
+library(dplyr)
 ```
 
 # 9.3.3 Exercises
@@ -47,9 +49,11 @@ storms
 gather(storms,key="variable",value="value","wind","pressure")
 ```
 
+TODO: The following spread command is throwing errors when knitting document. However, it runs OK on the command line.
+
 ```{r}
 head(population)
-spread(population,key=country,value=population)
+#spread(population,key=country,value=population)
 ```
 
 ```{r}
@@ -67,4 +71,22 @@ gather(who,key="new",value="value",5:60)
 ```
 
 2. Work through the demos included in the `tidyr` package (`demo(package = "tidyr")`).
+
+```{r}
+demo('so-15668870')
+```
+
+```{r}
+demo('so-16032858')
+```
+
+```{r}
+demo('so-17481212')
+```
+
+```{r}
+demo('so-9684671')
+```
+
+
 
