@@ -1,0 +1,121 @@
+---
+title: "Chapter 10"
+author: "Amanda P"
+date: "2/11/2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(ggplot2)
+library(dplyr)
+```
+
+# 10.2.3 Exercises
+
+1. Practice your filtering skills by:
+
+Finding all the diamonds with equal x and y dimensions
+
+```{r}
+filter(diamonds,x==y)
+```
+
+A depth between 55 and 70:
+
+```{r}
+filter(diamonds,depth >= 55, depth <= 70)
+```
+
+A carat smaller than the median carat:
+
+```{r}
+filter(diamonds,carat < median(carat))
+```
+
+Cost more than $10,000 per carat:
+
+```{r}
+filter(diamonds, price > 10000)
+```
+
+Are of good or better quality:
+
+```{r}
+filter(diamonds, cut >= "Good")
+```
+
+2. Fill in the question marks in the table:
+
+------------------------------
+Expression | TRUE | FALSE | NA
+-----------|------|-------|---
+x          | X    |       |
+!x         |      | X     |    
+is.na(x)   |      |       | X
+!is.na(x)  | ?    | ?     | ?
+?          | X    |       | X
+?          |      | X     | X
+
+TODO: Finish above table. I'm not exactly sure what it's asking. Is x the same expression from row to row?
+
+3. Repeat the analysis of outlying values with $z$. Compared to $x$ and $y$, how would you characterize the relationship of $x$ and $z$, or $y$ and $z$?
+
+Analysis of $x$ and $z$:
+
+```{r}
+ggplot(diamonds, aes(x,z)) + geom_bin2d()
+```
+
+Next filter out points where $x$ or $z$ are 0. Also, filter out large $z$ values (greater than 30). 
+
+```{r}
+diamondsFiltered <- filter(diamonds, x>0, z>0, z<30)
+ggplot(diamondsFiltered, aes(x,z)) + geom_bin2d()
+```
+
+We can see in the above plot that $x$ and $z$ have a linear relationship.
+
+Next consider $y$ and $z$:
+
+```{r}
+ggplot(diamonds, aes(y,z)) + geom_bin2d()
+```
+
+Let's filter out outliers (y>30 or z>30) and remove zeros:
+
+```{r}
+diamondsFiltered <- filter(diamonds, z<30, y<30, z>0, y>0)
+ggplot(diamondsFiltered, aes(y,z)) + geom_bin2d()
+```
+
+We see in the plot above that $y$ and $z$ also have a linear relationship.
+
+4. Install the `ggplot2movies` package and look at the movies tha thave a missing budget. How are they different from the movies with a budget? (Hint: try a frequency polygon plus coor = is.na(budget))
+
+```{r}
+#install.packages("ggplot2movies")
+library("ggplot2movies")
+filter(movies,is.na(budget))
+```
+
+Compare ratings:
+
+```{r}
+ggplot(movies, aes(rating, ..density.., color=is.na(budget))) + geom_freqpoly()
+```
+
+5. What is `NA & FALSE` and `NA | TRUE`? Why? Why doesn't `NA * 0` equal zero? What number time zero does not equal 0? What do you expect NA ^ 0 to equal? Why?
+
+```{r}
+NA & FALSE
+
+NA | TRUE
+```
+
+FALSE "and-ed" with anything is always FALSE. So, `NA & FALSE` is FALSE. TRUE "or-ed" with anything is always TRUE. So, `NA | TRUE` is TRUE.
+
+`NA * 0` does not equal zero, because `Inf * 0` does not equal 0. Since we don't know what the missing value (NA) is, we can't say that its product with 0 is 0.
+
+`NA ^ 0` is 1. 
+
