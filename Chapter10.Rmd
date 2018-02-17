@@ -119,3 +119,63 @@ FALSE "and-ed" with anything is always FALSE. So, `NA & FALSE` is FALSE. TRUE "o
 
 `NA ^ 0` is 1. 
 
+
+#10.2.3 
+
+1. Practice your variable creation skills by creating the following new variables:
+
+* The approximate volume of the diamond (using x, y, and z).
+
+```{r}
+diamonds2 <- mutate(diamonds, volume = x*y*z)
+select(diamonds2,x,y,z,volume) %>% head()
+```
+
+* The approximate density of the diamond.
+
+```{r}
+#Density is mass/volume.
+diamonds2 <- mutate(diamonds2, density=carat/volume)
+select(diamonds2,carat,volume,density) %>% head()
+```
+
+* The price per carat.
+
+```{r}
+diamonds2 <- mutate(diamonds2,ppc=round(price/carat, digits=2))
+select(diamonds2,price,carat,ppc) %>% head()
+```
+
+* Log transformation of carat and price.
+
+```{r}
+diamonds2 <- mutate(diamonds2,caratL=log(carat),priceL=log(price))
+select(diamonds2,carat,caratL,price,priceL) %>% head()
+```
+
+
+2. How can you improve the data density of `ggplot(diamonds, aes(x,z)) + stat_bin2d()`? What transformation makes it easier to extract outliers?
+
+```{r}
+ggplot(diamonds, aes(log(x),log(z))) + stat_bin2d()
+```
+
+3. The depth variable is just the width of the diamond (average of x and y) divided by its height (z) multiplied by 100 and rounded to the nearest integer. Compute the depth yourself and compare it to the existing depth variable. Summarize your findings with a plot.
+
+TODO: Diamonds documention says that "depth percentage = z / mean(x, y)", which is the reciprocal of the description in this problem.  
+
+```{r}
+diamonds2 <- mutate(diamonds2,depth2=round(100*(x+y)/(2*z)))
+select(diamonds2,x,y,z,depth2,depth) %>% head()
+ggplot(diamonds2, aes(depth,depth2)) + geom_point()
+```
+
+4. Compare the distribution of symmetry for diamonds with $x > y$ vs. $x < y$.
+
+```{r}
+diamonds2 <- mutate(diamonds2,sym=x-y)
+select(diamonds2,x,y,sym) %>% head()
+#Filter outliers using filter, then plot:
+ggplot(filter(diamonds2,sym>-1,sym<1), aes(sym,color=x<y)) + geom_freqpoly()
+```
+
