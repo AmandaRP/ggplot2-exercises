@@ -179,3 +179,112 @@ select(diamonds2,x,y,sym) %>% head()
 ggplot(filter(diamonds2,sym>-1,sym<1), aes(sym,color=x<y)) + geom_freqpoly()
 ```
 
+# 10.4.3 Exercises
+
+1. For each year in the `ggplot2movies::movies` data determine the percent of movies with missing budgets. Visualize the result.
+
+```{r}
+missingBudget <- movies %>% group_by(year) %>% summarize(pct=mean(is.na(budget)))
+ggplot(missingBudget, aes(year,pct)) + geom_line()
+```
+
+2. How does the average length of a movie change over time? Display your answer with a plot, including some display of uncertainty.
+
+
+```{r}
+lenByDecade <- movies %>% mutate(decade=floor(movies$year/10)*10) %>% group_by(decade) %>% summarize(avgLen=mean(length),se=sd(length))
+head(lenByDecade)
+
+ggplot(lenByDecade,aes(decade,avgLen,ymin=avgLen-se,ymax=avgLen+se)) + geom_point() + geom_line() + geom_errorbar()
+```
+
+
+3. For each combination of diamond quality (e.g. cut, color, and clarity), count the number of diamonds, the average price and the average size. Visualize the results.
+
+```{r}
+diamonds2 <- diamonds %>% mutate(size=sqrt(x^2 + y^2)) %>% group_by(cut,color,clarity) %>% summarize(cnt=n(),avgPrice=mean(price),avgSize=mean(size)) 
+
+ggplot(diamonds2, aes(avgSize,avgPrice, color=color)) + geom_point(aes(size=cnt)) + facet_grid(cut ~ clarity) + xlab("Average Size") + ylab("Average Price")
+```
+
+
+4. Comput a histogram of carat by "hand" using a binwidth of 0.1. Display the results with `geom_bar(stat = "identity")`. (Hint: you might need to create a new variable first.)
+
+```{r}
+diamonds2 <- diamonds %>% mutate(bin=round(carat,digits=1))
+histData <- diamonds2 %>% group_by(bin) %>% summarize(n=n())
+
+ggplot(histData, aes(bin,n)) + geom_bar(stat="identity") + xlab("carat") + ylab("count")
+```
+
+
+5. In the baseball example, the batting average seems to increase as the number of at bats increases. Why?
+
+ba = H/AB
+
+One theory: The batter's performance improves with more experience (higher number of at bats).
+
+Second theory: According to the Central Limit Theorem, the batting average converges to a normal distribution as the number of at bats increases. When the number of at bats is small, the distribution may be skewed to the right (with the mass of the distribution pulling the points to the left).
+
+# 10.5.1 Exercises
+
+1. Translate each of the examples in this chapter to use the pipe. 
+
+Page 212:
+
+```{r}
+diamonds %>% group_by(clarity) %>% summarize(price=mean(price))
+```
+
+```{r}
+diamonds %>% group_by(cut,depth) %>% summarize(n=n()) %>% filter(depth>55,depth<70)
+```
+
+Page 216:
+
+```{r}
+#install.packages("Lahman")
+library("Lahman")
+Batting %>% filter(AB>0) %>% group_by(playerID) %>% summarize(ba=sum(H, na.rm=TRUE) / sum(AB, ra.rm=TRUE))
+```
+
+
+2. What does the following pipe do?
+
+```{r}
+library(magrittr)
+x <- runif(10)
+x %>%
+  subtract(mean(.)) %>%
+  raise_to_power(2) %>%
+  mean() %>%
+  sqrt()
+```
+
+Subtract the mean(x) from each x value, then square each value, then find the mean of all values, then take the square root. 
+
+
+3. Which player in the `Batting` dataset has had the most consistently good performance over the course of their career?
+
+TODO: finish
+
+```{r}
+Batting %>% select(playerID) %>% unique() %>% count()
+```
+
+#TODO: Debug following. Remove NAs. Find max(lb).
+
+```{r}
+baPerBatter <- Batting %>% 
+  mutate(baPerYear=H/AB) %>% 
+  group_by(playerID) %>%
+  summarize(totalHits=sum(H, na.rm=TRUE),totalAB=sum(AB, na.rm=TRUE),ba=sum(H, na.rm=TRUE)/sum(AB, na.rm=TRUE),n=n(),lq=quantile(baPerYear,0.25),uq=quantile(baPerYear,0.75)) %>%
+  mutate(lb=meanba-se) %>% 
+  filter(n>1,totalHits>n) #ignore players with too few hits (either b/c of few AB or few hits. Also ignore players who have only played for one year.)
+  
+
+head(baPerBatter)
+
+ggplot(baPerBatter, aes(playerID,ba)) + geom_point()
+```
+
