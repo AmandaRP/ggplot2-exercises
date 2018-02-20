@@ -36,7 +36,7 @@ filter(diamonds,carat < median(carat))
 Cost more than $10,000 per carat:
 
 ```{r}
-filter(diamonds, price > 10000)
+filter(diamonds, round(price/carat, digits=2) > 10000)
 ```
 
 Are of good or better quality:
@@ -91,7 +91,7 @@ ggplot(diamondsFiltered, aes(y,z)) + geom_bin2d()
 
 We see in the plot above that $y$ and $z$ also have a linear relationship.
 
-4. Install the `ggplot2movies` package and look at the movies tha thave a missing budget. How are they different from the movies with a budget? (Hint: try a frequency polygon plus coor = is.na(budget))
+4. Install the `ggplot2movies` package and look at the movies that have a missing budget. How are they different from the movies with a budget? (Hint: try a frequency polygon plus coor = is.na(budget))
 
 ```{r}
 #install.packages("ggplot2movies")
@@ -208,7 +208,7 @@ ggplot(diamonds2, aes(avgSize,avgPrice, color=color)) + geom_point(aes(size=cnt)
 ```
 
 
-4. Comput a histogram of carat by "hand" using a binwidth of 0.1. Display the results with `geom_bar(stat = "identity")`. (Hint: you might need to create a new variable first.)
+4. Compute a histogram of carat by "hand" using a binwidth of 0.1. Display the results with `geom_bar(stat = "identity")`. (Hint: you might need to create a new variable first.)
 
 ```{r}
 diamonds2 <- diamonds %>% mutate(bin=round(carat,digits=1))
@@ -222,9 +222,7 @@ ggplot(histData, aes(bin,n)) + geom_bar(stat="identity") + xlab("carat") + ylab(
 
 ba = H/AB
 
-One theory: The batter's performance improves with more experience (higher number of at bats).
-
-Second theory: According to the Central Limit Theorem, the batting average converges to a normal distribution as the number of at bats increases. When the number of at bats is small, the distribution may be skewed to the right (with the mass of the distribution pulling the points to the left).
+TODO: Finish.
 
 # 10.5.1 Exercises
 
@@ -266,25 +264,26 @@ Subtract the mean(x) from each x value, then square each value, then find the me
 
 3. Which player in the `Batting` dataset has had the most consistently good performance over the course of their career?
 
-TODO: finish
-
-```{r}
-Batting %>% select(playerID) %>% unique() %>% count()
-```
-
-#TODO: Debug following. Remove NAs. Find max(lb).
+Of all batters who have atleast 80 at bats, cobbty01 has the highest batting average (0.36636) with 4189 hits out of 11,434 total at bats (over the course of 24 years).
 
 ```{r}
 baPerBatter <- Batting %>% 
-  mutate(baPerYear=H/AB) %>% 
-  group_by(playerID) %>%
-  summarize(totalHits=sum(H, na.rm=TRUE),totalAB=sum(AB, na.rm=TRUE),ba=sum(H, na.rm=TRUE)/sum(AB, na.rm=TRUE),n=n(),lq=quantile(baPerYear,0.25),uq=quantile(baPerYear,0.75)) %>%
-  mutate(lb=meanba-se) %>% 
-  filter(n>1,totalHits>n) #ignore players with too few hits (either b/c of few AB or few hits. Also ignore players who have only played for one year.)
-  
+    group_by(playerID) %>% summarize(totalHits=sum(H, na.rm=TRUE),totalAB=sum(AB, na.rm=TRUE),ba=sum(H, na.rm=TRUE)/sum(AB, na.rm=TRUE),n=n()) %>% 
+  filter(totalHits>0,totalAB>50) %>% 
+  arrange(desc(ba))
 
 head(baPerBatter)
 
-ggplot(baPerBatter, aes(playerID,ba)) + geom_point()
 ```
+
+Additionally, we can see that his batting average did not vary too greatly over the years (especially after the improvement during the first 5 years).
+
+```{r}
+cobbty01 <- Batting %>% filter(playerID=="cobbty01") %>% 
+  mutate(ba=H/AB)
+
+ggplot(cobbty01, aes(yearID,ba,ymin=0,ymax=0.5)) + geom_line()
+
+```
+
 
