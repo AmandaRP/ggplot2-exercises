@@ -14,9 +14,91 @@ library(ggplot2)
 
 1. What happens if you repeat the above analysis with all diamonds? (Not just all diamonds with two or fewer carats). What does the strange geometry of `log(carat)` vs relative price represent? What does the diagonal line without any points represent?
 
+Consider the linear relationship between `lcarat` and `lprice`:
+
+```{r}
+diamonds2 <- diamonds %>% 
+  mutate(
+    lcarat = log2(carat),
+    lprice = log2(price)
+  )
+diamonds2
+
+ggplot(diamonds2, aes(lcarat,lprice)) +
+  geom_bin2d() +
+  geom_smooth(method="lm",se=FALSE,size=2,color="yellow")
+```
+We can see above that the x-axis has been extended to the right compared to the original plot (since the original plot was limited to 2 or fewer carats). The range of `lprice` did not increase. 
+
+
+```{r}
+mod <- lm(lprice ~ lcarat, data=diamonds2)
+diamonds2 <- diamonds2 %>% mutate(rel_price = resid(mod))
+diamonds2
+ggplot(diamonds2,aes(carat,rel_price)) + geom_bin2d()
+```
+
+The above plot is not good as it is showing a distinct pattern in the residuals. The linear model is overpredicting the log price for large carats. The variance of the residuals is significantly higher for smaller carats. Looking back at the picture of the linear model, the model extends beyond the range of `lprice`, thus there are only points below the line at this point (which is why we see negative residual.) 
+
+```{r}
+color_cut <- diamonds2 %>%
+  group_by(color, cut) %>%
+  summarize(
+    price = mean(price),
+    rel_price = mean(rel_price)
+  )
+color_cut
+```
+
+
+```{r}
+ggplot(color_cut, aes(color, price)) +
+  geom_line(aes(group=cut), color="grey80") + 
+  geom_point(aes(color = cut))
+```
+
+Above we see the same trend as in the book, where the lowest quality diamonds (color=J) hae the highest price, especially for Premium cut diamonds. Plotting relative price against color solves the issue.
+
+```{r}
+ggplot(color_cut, aes(color, rel_price)) +
+  geom_line(aes(group = cut), color = "grey80") + 
+  geom_point(aes(color=cut))
+```
+
 2. I made an unsupported assertion that lower-quality diamonds tend to be larger. Support my claim with a plot.
+
+```{r}
+ggplot(diamonds, aes(color, carat)) + geom_boxplot()
+
+```
 
 3. Can you create a plot that simultaneously shows the effect of color, cut, and clarity on relative price? If there's too much information to show on one plot, think about how you might create a sequence of plots to convey the same message.
 
+```{r}
+color_cut_clarity <- diamonds2 %>%
+  group_by(color, cut, clarity) %>%
+  summarize(
+    price = mean(price),
+    rel_price = mean(rel_price)
+  )
+ggplot(color_cut_clarity, aes(color,rel_price)) + 
+  geom_line(aes(group=cut), color="grey80") + 
+  geom_point(aes(color=cut)) + 
+  facet_wrap(~clarity)
+```
+
 4. How do depth and table related to the relative price?
 
+Table and depth do not have much relatiohship with relative price. This makes sense as table and depth are highly correlated to carat (weight) and we've already taken out the effect of carat.
+
+```{r}
+#diamonds2
+ggplot(diamonds2,aes(depth,rel_price)) +
+  geom_bin2d()
+```
+
+```{r}
+#diamonds2
+ggplot(diamonds2,aes(table,rel_price)) +
+  geom_bin2d()
+```
