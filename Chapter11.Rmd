@@ -8,6 +8,8 @@ output: html_document
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 library(ggplot2)
+library(magrittr)
+library(dplyr)
 ```
 
 # 11.2.1 Exercises
@@ -102,3 +104,112 @@ ggplot(diamonds2,aes(depth,rel_price)) +
 ggplot(diamonds2,aes(table,rel_price)) +
   geom_bin2d()
 ```
+
+# 11.3.1 Exercises
+
+1. The final plot shows a lot of short-term noise in the overall trend. How could you smooth this further to focus on long-term changes?
+
+Instead of using `geom_line`, we can draw a loess curve using `geom_smooth`:
+
+```{r}
+txhousing
+
+#de-season function:
+deseas <- function(x,month){
+  resid(lm(x ~ factor(month), na.action = na.exclude))
+}
+
+txhousing <- txhousing %>%
+  group_by(city) %>%
+  mutate(rel_sales = deseas(log(sales), month))
+
+ggplot(txhousing, aes(date,rel_sales)) + 
+  geom_line(aes(group=city), alpha = 1/5) +
+  #geom_line(stat = "summary", fun.y="mean", color="red")
+  geom_smooth(method="loess",se=FALSE)
+```
+
+2. If you look closely (e.g. `+ xlim(2008,2012)`) at the long-term trend you'll notice a weird pattern in 2009-2011. It looks like there was a big dip in 2010. Is this dip "real"? (i.e. can you spot it in the original data)
+
+Looking at the relative sales (after taking out the month effect), a number of cities do indeed tend to have a dip in 2010:
+
+```{r}
+ggplot(txhousing, aes(date,rel_sales)) + 
+  geom_line(aes(group=city), alpha = 1/5) +
+  geom_line(stat = "summary", fun.y="mean", color="red") +
+  #geom_smooth(method="loess",se=FALSE) +
+  xlim(2008,2012)
+```
+
+TODO: Maybe there are more missing data points in 2010? Check.
+
+```{r}
+sales2010 <- txhousing %>% filter(year==2010)
+sales2010
+```
+
+
+3. What other variables in the TX housing data show strong seasonal effects? Does this technique help to remove them?
+
+```{r}
+summary(txhousing)
+
+#"Months inventory": amount of time it would take to sell all current listings at current pace of sales. 
+ggplot(txhousing, aes(date,log(inventory))) + 
+  geom_line(aes(group=city), alpha=1/2)
+
+#Total active listings
+ggplot(txhousing, aes(date,log(listings))) +
+  geom_line(aes(group=city), alpha=1/2)
+
+#Total value of sales
+ggplot(txhousing, aes(date,log(volume))) +
+  geom_line(aes(group=city), alpha=1/2)
+
+#Median sale price:
+ggplot(txhousing, aes(date,log(median))) +
+  geom_line(aes(group=city), alpha=1/2)
+```
+
+
+4. Not all the cities in this data set have complete time series. Use your `dplyr` skills to figure out how much data each city is missing. Display the results with a visualization.
+
+```{r}
+numDates <- txhousing %>% 
+  summarize(nDates=n_distinct(date)) %>% 
+  select(nDates) %>% 
+  max()
+numDates
+
+cityCnts <- txhousing %>%
+  na.omit() %>%
+  group_by(city) %>%
+  summarize(nComplete=n()) %>%
+  mutate(pctComplete=nComplete/numDates)
+cityCnts
+
+ggplot(cityCnts, aes(city,pctComplete)) + 
+  geom_col() +
+  labs(x="City", y="% Complete") + 
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+
+  
+```
+
+
+5. Replicate the computation that `stat_summary()` did with dplyr so you can plot the data "by hand".
+
+Comment: I think this question is refering to the `geom_line` shown on page 229 using `stat="summary"` and `fun.y="mean"`.
+
+```{r}
+meanRelSalesData <- txhousing %>%
+  group_by(date) %>%
+  summarize(meanRelSales = mean(rel_sales, na.rm=TRUE))
+meanRelSalesData
+
+ggplot(txhousing, aes(date,rel_sales)) + 
+  geom_line(aes(group=city), alpha = 1/5) +
+  geom_line(aes(date,meanRelSales),data=meanRelSalesData,color="red")
+
+```
+
