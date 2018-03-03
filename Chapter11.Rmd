@@ -213,3 +213,127 @@ ggplot(txhousing, aes(date,rel_sales)) +
 
 ```
 
+# 11.5.1 Exercises
+
+1. Do your conclusions change if you use a different measurement of model fit like AIC or deviance? Why/ why not?
+
+```{r}
+#install.packages("broom")
+library(broom)
+```
+
+```{r}
+models <- txhousing %>%
+  group_by(city) %>%
+  do(mod = lm(log2(sales) ~ factor(month), data = ., na.action = na.exclude))
+models
+
+model_sum <- models %>% glance(mod)
+model_sum
+
+ggplot(model_sum, aes(AIC, reorder(city,AIC))) +
+  geom_point()
+```
+
+Looking at AIC: Harlingen, San Marcos, and Brownsville have the highest AIC (2 of the three are the same cities that had the lowest $R^2$). Dallas, El Paso, and Midland have the lowest AIC, which are different than those having the highest $R^2$. (Recall low AIC is better.)
+
+```{r}
+worstAIC <- c("Harlingen", "San Marcos", "Brownsville")
+bestAIC <- c("Dallas", "El Paso", "Midland")
+extreme <- txhousing %>% ungroup() %>%
+  filter(city %in% c(worstAIC,bestAIC), !is.na(sales)) %>%
+  mutate(city = factor(city, c(worstAIC, bestAIC)))
+
+ggplot(extreme, aes(month, log(sales))) +
+  geom_line(aes(group=year)) +
+  facet_wrap(~city)
+```
+
+TODO: Why the change?
+
+
+2. One possible hypothesis that explains why McAllen, Harlingen and Brownsville have lower $R^2$ is that they're smaller towns so there are fewer sales and more noise. Confirm or refute this hypothesis.
+
+Looking at the plot on page 234, McAllen (low $R^2$) and Bryan-College Station (high $R^2$) have similar order of magnitude of sales. This is also apparent looking at a boxplot of their sales. 
+
+```{r}
+txhousing %>% ungroup() %>%
+  group_by(city) %>%
+  filter(city %in% c("McAllen","Bryan-College Station"), !is.na(sales)) %>%
+  summarize(meanSales=mean(sales))
+
+selectCities <- txhousing %>%
+  filter(city %in% c("McAllen","Bryan-College Station"), !is.na(sales)) 
+
+ggplot(selectCities, aes(city,sales)) + geom_boxplot()
+
+```
+
+If we look at all of the extreme cities, however, we do see that NE Tarrant County (high $R^2$) does have significantly more sales. Also, Brownsville and Harlengen (both having low $R^2$) do have fewer sales than the others.
+
+```{r}
+selectCities <- txhousing %>%
+  filter(city %in% c("McAllen","Bryan-College Station", "Lubbock", "NE Tarrant County", "Brownsville", "Harlingen"), !is.na(sales)) 
+
+ggplot(selectCities, aes(city,sales)) + geom_boxplot()
+```
+
+
+3. McAllen, Harlingen and Brownsville seem to have much more year-to-year variation that Bryan-College Station, Lubbock, and NE Tarrant County. How does the model change if you also include a linear trend for year? (i.e. `log(sales) ~ factor(month) + year`).
+
+```{r}
+models <- txhousing %>%
+  group_by(city) %>%
+  do(mod = lm(log2(sales) ~ factor(month) + year, data = ., na.action = na.exclude))
+models
+
+model_sum <- models %>% glance(mod)
+model_sum
+
+ggplot(model_sum, aes(r.squared, reorder(city,r.squared))) +
+  geom_point()
+
+```
+
+Harlingen moved up 10 places (comparing the $R^2$ values) by adding year to the model. 
+
+4. Create a faceted plot that shows the seasonal patterns for all cities. Order the facets by the $R^2$ for the city.
+
+```{r}
+models <- txhousing %>%
+  group_by(city) %>%
+  do(mod = lm(log2(sales) ~ factor(month), data = ., na.action = na.exclude))
+
+model_sum <- models %>% glance(mod)
+model_sum
+
+ggplot(txhousing, aes(month, log(sales))) +
+  geom_line(aes(group=year)) +
+  facet_wrap(~city)
+```
+
+TODO: How to order facets by $R^2$? Maybe join datasets and then us reorder statment.
+
+#11.6.1 Exercises
+
+1. Pull out the three cities with the highest and lowest seasonal effect. Plot their coefficients. 
+
+```{r}
+coef <- models %>% tidy(mod)
+coef
+
+
+```
+
+
+2. How does strength of seasonal effect relate to the $R^2$ for the model? Answer with a plot.
+
+3. You should be extra cautious when your results agree with your prior beliefs. How can you confirm or refute my hypothesis about the causes of strong seasonal patterns?
+
+
+# 11.7.1 Exercises
+
+1. A common diagnostic plot is fitted values (`.fitted`) vs. residuals (.resid). Do you see any patterns? What if you include the city or month on the same plot?
+
+2. Create a time series of `log(sales)` for each city. Highlight points tha thave a standardized residual of greater than 2.
+
