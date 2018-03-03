@@ -30,6 +30,7 @@ ggplot(diamonds2, aes(lcarat,lprice)) +
   geom_bin2d() +
   geom_smooth(method="lm",se=FALSE,size=2,color="yellow")
 ```
+
 We can see above that the x-axis has been extended to the right compared to the original plot (since the original plot was limited to 2 or fewer carats). The range of `lprice` did not increase. 
 
 
@@ -397,9 +398,33 @@ TODO: How to plot each model?
 1. A common diagnostic plot is fitted values (`.fitted`) vs. residuals (`.resid`). Do you see any patterns? What if you include the city or month on the same plot?
 
 ```{r}
+models <- txhousing %>%
+  group_by(city) %>%
+  do(mod = lm(log2(sales) ~ factor(month), data = ., na.action = na.exclude))
 
+obsSummary <- models %>% augment(mod)
+obsSummary
+
+p <- ggplot(obsSummary, aes(.fitted,.resid)) + 
+  geom_point() 
+p
+```
+
+We see in the above plot a reduction in variance of the residuals as the fitted values get larger. The plots look much better when we add month (the variation of residuals seems to be high for month=NA):
+
+```{r}
+p + facet_wrap(~factor.month.)
+#p + facet_wrap(~city)
 ```
 
 
 2. Create a time series of `log(sales)` for each city. Highlight points tha thave a standardized residual of greater than 2.
 
+```{r}
+largeResid <- obsSummary %>% filter(abs(.std.resid)>2)
+largeResid
+
+ggplot(txhousing,aes(date,log(sales))) + geom_line(aes(group=city))
+```
+
+TODO: How to know which of the original data points map to the records in obsSummary?
