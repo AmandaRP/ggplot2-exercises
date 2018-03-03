@@ -319,17 +319,56 @@ TODO: How to order facets by $R^2$? Maybe join datasets and then us reorder stat
 1. Pull out the three cities with the highest and lowest seasonal effect. Plot their coefficients. 
 
 ```{r}
-coef <- models %>% tidy(mod)
-coef
+coefs <- models %>% tidy(mod)
+coefs
 
+#Pull out months:
+months <- coefs %>%
+  filter(grepl("factor",term)) %>%
+  tidyr::extract(term,"month","(\\d+)", convert=TRUE)
+months
 
+#Strength of seasonal effect:
+coefSummary <- months %>%
+  group_by(city) %>%
+  summarize(max=max(estimate))
+#ggplot(coefSummary, aes(2^max, reorder(city,max))) +
+#  geom_point() + 
+#  ggtitle("Maximum coefficient per City")
+
+#Extract highest and lowest seasonal effect:
+top3 <- coefSummary %>% top_n(3,max)
+bottom3 <- coefSummary %>% top_n(-3,max)
+selectCitySummary <- rbind(top3,bottom3)
+
+#Plot their coeficients:
+ggplot(selectCitySummary, aes(2^max, reorder(city,max))) +
+  geom_point() + 
+  ggtitle("Maximum 2^coefficients for Cities \nwith highest and lowest seasonal effect")
 ```
 
 
 2. How does strength of seasonal effect relate to the $R^2$ for the model? Answer with a plot.
 
+There seems to be a positive relationship between $R^2$ and seasonal effect:
+
+```{r}
+#model_sum contains r.squared for each city 
+#coefSummary contains max coef (seasonal effect)
+
+combined <- inner_join(model_sum,coefSummary,by="city")
+combined
+
+ggplot(combined, aes(r.squared,2^max)) + 
+  geom_point() +
+  labs(y="Max 2^Coef (Seasonal effect)")
+```
+
+
 3. You should be extra cautious when your results agree with your prior beliefs. How can you confirm or refute my hypothesis about the causes of strong seasonal patterns?
 
+Hypothesis: Cities with strongest seasonal effect are college and beach towns.
+TODO: Finish
 
 # 11.7.1 Exercises
 
