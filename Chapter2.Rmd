@@ -22,6 +22,7 @@ class(mpg)
 colnames(mpg)
 dim(mpg)
 head(mpg)
+glimpse(mpg)
 summary(mpg)
 ```
 
