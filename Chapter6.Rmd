@@ -2,7 +2,10 @@
 title: "Chapter6"
 author: "Amanda P"
 date: "1/24/2018"
-output: html_document
+output: 
+  html_document:
+    toc: yes
+    toc_float: yes
 ---
 
 ```{r setup, include=FALSE}
