@@ -75,10 +75,9 @@ Three different object you can supply to `breaks`:
 3. Recreate the plot in the book:
 
 ```{r}
-ggplot(mpg,aes(displ,hwy,color=drv)) + geom_point()
+ggplot(mpg,aes(displ,hwy,color=drv)) + geom_point() + scale_color_manual(labels = c("4wd", "fwd", "rwd"), values = c("hotpink", "green", "blue"))
 ```
 
-TODO: Finish. How to modify legend labels?
 
 4. What label function allows you to create mathematical expressions? What label function converts 1 to 1st, 2 to 2nd, and so on?
 
@@ -114,11 +113,10 @@ ggplot(mpg,aes(displ,hwy)) + geom_point(aes(color=drv,shape=drv))
 3. Can you recreate the code for this plot?
 
 ```{r}
-ggplot(mpg,aes(displ,hwy,color=class)) + geom_point() + geom_smooth(method="lm",se=FALSE) + theme(legend.position = "bottom",legend.title = NULL) 
+ggplot(mpg,aes(displ,hwy,color=class)) + geom_point() + geom_smooth(method="lm",se=FALSE) + theme(legend.position = "bottom",legend.title = NULL) + guides(color = guide_legend(nrow = 1)) + 
+  theme(legend.title=element_blank())
 ```
 
-
-TODO: How to put legend keys in one row and get rid of legend title?
 
 # 6.5.1 Exercises
 
@@ -132,12 +130,13 @@ x.min <- mpg %>% select(displ) %>% min()
 x.max <- mpg %>% select(displ) %>% max()
 y.min <- mpg %>% select(hwy) %>% min()
 y.max <- mpg %>% select(hwy) %>% max()
+class.unique <- mpg %>% select(class) %>% unique() %>% as.data.frame()
 
-ggplot(fwd, aes(displ,hwy,color=class)) + geom_point() + xlim(x.min,x.max) + ylim(y.min,y.max)
-ggplot(rwd, aes(displ,hwy,color=class)) + geom_point()+ xlim(x.min,x.max) + ylim(y.min,y.max) 
+ggplot(fwd, aes(displ,hwy,color=class)) + geom_point() + scale_x_continuous(limits=c(x.min,x.max))+ scale_y_continuous(limits=c(y.min,y.max)) + scale_colour_discrete(limits = class.unique$class) 
+
+ggplot(rwd, aes(displ,hwy,color=class)) + geom_point() + scale_x_continuous(limits=c(x.min,x.max)) + scale_y_continuous(limits=c(y.min,y.max)) + scale_colour_discrete(limits = class.unique$class) 
 ```
 
-TODO: How to get legends to match?
 
 2. What does `expand_limits()` do and how does it work? Read the source code.
 
