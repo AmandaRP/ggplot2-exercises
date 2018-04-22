@@ -51,5 +51,7 @@ For each of the graphics listed below, write down the components of the graphic.
 
 7. ["Dissecting a Trailer: The Parts of the Film That Make the Cut", by Shan Carter, Amanda Cox, and Mike Bostock at the New York Times](http://nyti.ms/1KTJQOE)
 
-"You have reached your free article limit for the month."
-TODO: Finish this problem.
++ bars indicating length of clip
++ colors indicating beginning, middle, and end (or not in movie)
++ aes mapping: time elapsed (seconds) in trailer vs time position in movie.
+

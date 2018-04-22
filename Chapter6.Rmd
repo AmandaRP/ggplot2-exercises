@@ -143,10 +143,9 @@ ggplot(rwd, aes(displ,hwy,color=class)) + geom_point() + scale_x_continuous(limi
 
 2. What does `expand_limits()` do and how does it work? Read the source code.
 
-It is used to expand the axis (or colorbar) limits to include additional points specified in the function.
+It is used to expand the axis (or colorbar) limits to include additional points specified in the function. Useful for making sure all panels of a plot include a certain point.
 
-Looking at the source code, it uses geom blank. TODO: Not exactly sure what it is doing.
-
+Looking at the source code, it is a wrapper for geom_blank, which draws "nothing" (blank point). 
 
 3. What happens if you add two `xlim()` calls to the same plot? Why?
 

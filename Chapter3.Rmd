@@ -28,11 +28,18 @@ library(ggplot2)
 
 3. What low-level geoms are used to draw `geom_smooth()`? What about `geom_boxplot` and `geom_violin`?
 
-* geom_smooth: geom_line, geom_curve
-* geom_boxplot: geom_polygon, geom_line, geom_point
-* geom_violin: geom_line, geom_density
+Description from Jake Kaupp:
+"You can check this out by investigating the `geom_smooth` call, which shows the call accessing the geom `GeomSmooth`.  If you then look at `GeomSmooth` you get shown a list and the fact that it is a `ggproto` object.  This is where you run into the fact that `ggplot2` runs on an object-oriented paradigm.
 
-Note: I'm not  confident about the answers for 3.
+You can access the pieces of the object via `$`, e.g. `GeomSmooth$draw_group`
+If you make that call you can see that `geom_smooth` uses `GeomLine` and `GeomRibbon`.
+A lot of background reading on the `ggproto` system can be found in https://cran.r-project.org/web/packages/ggplot2/vignettes/extending-ggplot2.html
+You can follow the same paths, or just call `GeomBoxplot$draw_group` or `GeomViolin$draw_group` to find out what geoms those calls use."
+
+* `geom_smooth`: GeomLine, GeomRibbon
+* `geom_boxplot`: GeomSegment, GeomCrossbar, GeomPoint
+* `geom_violin`: GeomPolygon, GeomPath
+
 
 # 3.5.5 Exercises
 
@@ -66,8 +73,6 @@ If it omitted, the points are drawn with no lines. Also, we get the following me
 group aesthetic?`
   
 There is no change between the plots drawn with `aes(group=1)` and `aes(group=2)`. It doesn't matter what integer value we use for group, the same picture is drawn.
-
-Why??? I'm not sure.
 
 
 4. How many bars are in each of the following plots? (Hint: try adding an outline around each bar with `color=white`)
@@ -131,6 +136,10 @@ ggplot(diamonds,aes(price)) + geom_histogram(binwidth = 200) + facet_wrap(~clari
 ```
 
 4. Overlay a frequency polygon and density plot of `depth`. What computed variable do you need to map to `y` to make the two plots comparable? (You can either modify `geom_freqpoly()` or `geom_density()`.)
+
+Jake Kaupp: " `geom_freqpoly` uses `y = ..count..` and `geom_density` uses `y = ..density..`. You can map different things to `y` in frequencypoly, so if you use an `aes(y = ..density..)` they become comparable."
+
+Two solutions:
 
 ```{r}
 ggplot(diamonds, aes(depth, ..count..)) + geom_freqpoly() + geom_density()

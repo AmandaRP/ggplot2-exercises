@@ -85,7 +85,7 @@ ggplot(mpg) + geom_point(aes(class,cty)) + geom_point(aes(hwy,cty))
 
 1. Download and print out the ggplot2 cheatsheet from http://www.rstudio.com/resources/cheatsheets/ so you have a handy visual reference for all the geoms.
 
-Done check.
+Done.
 
 2. Look at the documentation for the graphical primitive geoms. Which aesthetics do they use? How can you summarize them in a compact form?
 
@@ -99,7 +99,9 @@ The graphical primitive geoms use the following aesthetics.
 * `geom_polyon()`: x, y, alpha, color, fill, group, linetype, size
 * `geom_text()`: x, y, label, alpha, angle, color, family, fontface, group, hjust, lineheight, size, vjust
 
-TODO: How can you summarize them in a compact form?
+Summarize them in a compact form:
++ position: x,y, ymin, ymax, xmin, xmax, angle, hjust, vjust
++ style: alpha, color, fill, shape, size, stroke, linetype, fontface, lineheight
 
 
 3. What's the best way to master an unfamiliar geom? List three resources to help you get started.
@@ -162,10 +164,19 @@ ggplot(mpg,aes(drv,trans)) + geom_count(aes(size = ..prop.., group=1))
 
 `position_nudge()` is especially useful with text to place it in a position where it is readable and not hiding data points.
 
-2. Many position adjustments can only be used with a few geoms. For example, you can't stack boxplots or eror bars. Why not? What properties must a geom possess in order to be stackable? What properties must it possess to be dodgeable?
+2. Many position adjustments can only be used with a few geoms. For example, you can't stack boxplots or error bars. Why not? What properties must a geom possess in order to be stackable? What properties must it possess to be dodgeable?
 
-* What properties must a geom possess in order to be stackable? Ans: TODO
+* You can't stack boxplots or error bars. Why not?
+
+Boxplots and error bars describe the variability of a single variable. Only one such description per variable makes sense.
+
+* What properties must a geom possess in order to be stackable? 
+ 
+ The geom can be used to describe different segments of the variable of interest. For example, a bar chart (bars can be stacked) can be used to describe a variable such as frequency of an income category using stacked bars to differentiate between male and female. 
+
 * What properties must it possess to be dodgeable? Ans: TODO
+
+Similar to stackable geoms, dodgeable geoms must have multiple values per variable. We could use dodging in the example above to compare salaries of males to salaries of females to place the bars side by side. This would be more useful to compare the heights of the bars.  
 
 3. Why might you use `geom_jitter()` instead of `geom_count()`? What are the advantages and disadvantages of each technique?
 
