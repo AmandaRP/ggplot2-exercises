@@ -180,7 +180,26 @@ Continuous                | Discrete
 `scale_color_gradientn()` | `scale_color_grey()`
 `scale_color_distiller()` | `scale_color_manual()`
 
-TODO: finish
+* **scale_color_gradient**: two-color gradient, low-high. 
+* **scale_color_gradient2**: three-color gradient, low-med-high.
+* **scale_color_gradientn**: n-color gradient. Useful for colors that are meaningful for data.
+* **scale_color_distiller**: apply the Color-Brewer color scales to continuous data. 
+
+* **scale_color_hue**: default for discrete data. Picks evenly spaced hues around the HCL color wheel. Works well for up to eight colors. 
+* **scale_color_brewer**: uses handpicked "ColorBrewer" colors that work well with different applications. See options at [http:colorbrewer2.org](http:colorbrewer2.org). 
+* **scale_color_grey**: uses gray scale, from light to dark.
+* **scale_color_manual**: Use for your own discrete color palette.  
 
 2. Explore the distribution of the buit-in `colors()` using the `luv_colors` dataset.
+
+`colors()` returns all color names that R knows about. All built-in colors translate to the Luv color space.
+
+```{r}
+#using the same code provided in the book, however, using the color() function instead of the "col"" column of luv_colours
+
+ggplot(luv_colours, aes(u,v)) +
+  geom_point(aes(color=colors()), size=3) +
+  scale_color_identity() +
+  coord_equal()
+```
 
