@@ -109,7 +109,9 @@ base + theme_wsj() + ggtitle("theme_wsj()")
 
 3. Look at the plots in your favorite scientific journal. What themes do they most resemble? What are the main differences?
 
-TODO: Finish
+Looking at the April 2018 issue of Significance Magazine, plots most resemble the following themes:
+* theme_par
+* theme_grey, however, axis tickmarks are not used
 
 
 # 8.4.6 Exercises
@@ -160,7 +162,7 @@ Printed over the edge of the plot:
 base + ggtitle("This is a very very very very very\nlooooooooooooong plot title") + theme(plot.title = element_text(hjust=1.5))
 ```
 
-TODO: The question is "Why doesn't vjust do anything?" However, `vjust` seems to move the text vertically:
+The last part of the question is "Why doesn't vjust do anything?" It seems that `vjust` moves the text vertically (slightly). 
 
 ```{r}
 base + ggtitle("This is a very very very very very\nlooooooooooooong plot title") + theme(plot.title = element_text(vjust=4))
