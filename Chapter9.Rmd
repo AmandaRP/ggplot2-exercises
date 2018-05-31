@@ -14,6 +14,7 @@ library(ggplot2)
 library(devtools)
 library(tidyr)
 library(dplyr)
+library(EDAWR) #needed for 9.3.3
 ```
 
 # 9.3.3 Exercises
@@ -31,7 +32,6 @@ Economics to economics_long:
 gather(economics,key="variable",value="value","pce","pop","psavert","uempmed","unemploy")
 ```
 
-TODO: What is value01 in economics_long?
 
 Economics_long to economics:
 
@@ -44,24 +44,23 @@ spread(select(economics_long,1:3),key=variable,value=value)
 
 ```{r}
 #install_github("rstudio/EDAWR")
-library(EDAWR)
+#library(EDAWR)
 ```
+
+The storms data is already tidy. We'll gather the population and tb datasets.
 
 ```{r}
-storms
-gather(storms,key="variable",value="value","wind","pressure")
+head(EDAWR::population)
+gather(EDAWR::population,key="year",value="population",`1995`:`2013`)
 ```
 
-TODO: The following spread command is throwing errors when knitting document. However, it runs OK on the command line.
-
-```{r}
-head(population)
-#spread(population,key=country,value=population)
-```
 
 ```{r}
 tb
-gather(tb,key="ageGroup",value="count","child","adult","elderly")
+gather(tb,key="ageGroup",value="count","child":"elderly")
+
+#Alternative method (from @joonwoob). This might be easier to read:
+#tb %>% gather(child:elderly, key = "ageGroup", value = "count")
 ```
 
 # 9.4.1
