@@ -50,6 +50,20 @@ filter(diamonds, cut >= "Good")
 
 2. Fill in the question marks in the table:
 
+Given table:
+
+------------------------------
+Expression | TRUE | FALSE | NA
+-----------|------|-------|---
+x          | X    |       |
+?          |      | X     |    
+is.na(x)   |      |       | X
+!is.na(x)  | ?    | ?     | ?
+?          | X    |       | X
+?          |      | X     | X
+
+Solution:
+
 ------------------------------
 Expression | TRUE | FALSE | NA
 -----------|------|-------|---
@@ -123,7 +137,7 @@ FALSE "and-ed" with anything is always FALSE. So, `NA & FALSE` is FALSE. TRUE "o
 `NA ^ 0` is 1. 
 
 
-#10.2.3 
+#10.3.2 Exercises 
 
 1. Practice your variable creation skills by creating the following new variables:
 
@@ -165,12 +179,12 @@ ggplot(diamonds, aes(log(x),log(z))) + stat_bin2d()
 
 3. The depth variable is just the width of the diamond (average of x and y) divided by its height (z) multiplied by 100 and rounded to the nearest integer. Compute the depth yourself and compare it to the existing depth variable. Summarize your findings with a plot.
 
-TODO: Diamonds documention says that "depth percentage = z / mean(x, y)", which is the reciprocal of the description in this problem.  
+NOTE: Diamonds documention says that "depth percentage = z / mean(x, y)", which is the reciprocal of the description in this problem.  
 
 ```{r}
-diamonds2 <- mutate(diamonds2,depth2=round(100*(x+y)/(2*z)))
-select(diamonds2,x,y,z,depth2,depth) %>% head()
-ggplot(diamonds2, aes(depth,depth2)) + geom_point()
+diamondsNew <- mutate(diamonds2,depth2=round(100*z*2/(x+y),1))
+select(diamondsNew,x,y,z,depth2,depth) %>% head()
+ggplot(diamondsNew, aes(depth,depth2)) + geom_point()
 ```
 
 4. Compare the distribution of symmetry for diamonds with $x > y$ vs. $x < y$.
@@ -223,9 +237,9 @@ ggplot(histData, aes(bin,n)) + geom_bar(stat="identity") + xlab("carat") + ylab(
 
 5. In the baseball example, the batting average seems to increase as the number of at bats increases. Why?
 
-ba = H/AB
+Recall ba = H/AB.
 
-TODO: Finish.
+It's likely that as batters are at bat more (and bat against more pitchers) their performance improves.
 
 # 10.5.1 Exercises
 
