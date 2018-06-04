@@ -145,12 +145,6 @@ ggplot(txhousing, aes(date,rel_sales)) +
   xlim(2008,2012)
 ```
 
-TODO: Maybe there are more missing data points in 2010? Check.
-
-```{r}
-sales2010 <- txhousing %>% filter(year==2010)
-sales2010
-```
 
 
 3. What other variables in the TX housing data show strong seasonal effects? Does this technique help to remove them?
@@ -253,7 +247,7 @@ ggplot(extreme, aes(month, log(sales))) +
   facet_wrap(~city)
 ```
 
-TODO: Why the change?
+
 
 
 2. One possible hypothesis that explains why McAllen, Harlingen and Brownsville have lower $R^2$ is that they're smaller towns so there are fewer sales and more noise. Confirm or refute this hypothesis.
@@ -311,12 +305,25 @@ models <- txhousing %>%
 model_sum <- models %>% glance(mod)
 model_sum
 
-ggplot(txhousing, aes(month, log(sales))) +
+#TODO: Order by r.squared. Commands below are not giving me sorted cities.
+#Join txhousing to model summary. Then sort by r squared value:
+txhousingSorted <- left_join(txhousing,model_sum,by="city") %>% arrange(r.squared) %>% ungroup
+#cityOrdered <- model_sum %>% arrange(r.squared) %>% select(city) %>% ungroup
+#cityOrdered  <- txhousingSorted %>% select(city) %>% unique
+#factor(txhousing$city,levels=cityOrdered)
+#ggplot(transform(txhousing, city=factor(txhousing$city,levels=cityOrdered)), 
+#       aes(month, log(sales))) +
+#  geom_line(aes(group=year)) +
+#  facet_wrap(~city)
+
+
+ggplot(txhousingSorted, aes(month, log(sales))) +
   geom_line(aes(group=year)) +
   facet_wrap(~city)
+
+
 ```
 
-TODO: How to order facets by $R^2$? Maybe join datasets and then us reorder statment.
 
 #11.6.1 Exercises
 
@@ -372,11 +379,15 @@ ggplot(combined, aes(r.squared,2^max)) +
 3. You should be extra cautious when your results agree with your prior beliefs. How can you confirm or refute my hypothesis about the causes of strong seasonal patterns?
 
 Hypothesis: Cities with strongest seasonal effect are college and beach towns.
-TODO: Finish
+
+It can be difficult sometimes to make conclusions about cause. In this case we could perform a hypothesis test comparing seasonal effect for beach and college towns vs all other towns to see if there is a statistically significant difference. 
+
 
 4. Group the diamonds data by cut, clarity, and color. Fit a linear model `log(price) ~ log(carat)`. What does the intercept tell you? What does the slope tell you? How do the slope and intercept vary across the groups? Answer with a plot.
 
 The slope tells us how log(carat) changes in relationship with changes in log(price) (for each cut, color, and quality). The intercept tells us the starting log(price) reguarless of log(carat).
+
+Next we'll look at how the slope and intercept vary across groups.
 
 ```{r}
 models <- diamonds %>%
@@ -388,13 +399,27 @@ models <- diamonds %>%
   ))
 models
 
-models %>% glance(mod)
+models %>% glance(mod) 
 
-models %>% tidy(mod)
+slope <- models %>% tidy(mod) %>% filter(grepl("carat",term))
+slope
+intercept <- models %>% tidy(mod) %>% filter(grepl("Intercept",term))
+intercept
+
+#Plot slope estimates:
+ggplot(slope,aes(clarity,estimate,color=color)) +
+  geom_point() +
+  facet_wrap(~cut) +
+  labs(title="Slope") + ylab("Estimate of slope")
+
+#Plot intercept estimates:
+ggplot(slope,aes(clarity,estimate,color=color)) +
+  geom_point() +
+  facet_wrap(~cut) +
+  labs(title="Intercept") + ylab("Estimate of intercept")
+
 
 ```
-
-TODO: How to plot each model?
 
 # 11.7.1 Exercises
 
