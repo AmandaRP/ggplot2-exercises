@@ -426,6 +426,9 @@ ggplot(slope,aes(clarity,estimate,color=color)) +
 1. A common diagnostic plot is fitted values (`.fitted`) vs. residuals (`.resid`). Do you see any patterns? What if you include the city or month on the same plot?
 
 ```{r}
+txhousing <- txhousing %>% 
+  mutate(id = row_number())
+
 models <- txhousing %>%
   group_by(city) %>%
   do(mod = lm(log2(sales) ~ factor(month), data = ., na.action = na.exclude))
@@ -452,7 +455,10 @@ p + facet_wrap(~factor.month.)
 largeResid <- obsSummary %>% filter(abs(.std.resid)>2)
 largeResid
 
-ggplot(txhousing,aes(date,log(sales))) + geom_line(aes(group=city))
+ggplot(txhousing,aes(date,log(sales))) + 
+  geom_line(aes(group=city)) 
+
 ```
 
-TODO: How to know which of the original data points map to the records in obsSummary?
+
+Need to link augment results back up with original dataset. See broom issue discussion: [https://github.com/tidyverse/broom/issues/168](https://github.com/tidyverse/broom/issues/168)
